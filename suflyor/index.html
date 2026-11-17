@@ -111,7 +111,7 @@ body.theme-cream .reading-copy.empty{color:#967b68}
 @media(max-width:1000px){.workarea{grid-template-columns:1fr}.editor{min-height:390px}.script-input{min-height:190px}.preview-shell{height:58vh;max-height:none;flex:none}.workspace{min-height:auto}.focus-content .reading-copy{width:calc(100% - 70px)}.controls-panel{gap:10px}.top-meta{display:none}}
 @media(max-width:560px){.topbar{padding:17px 18px}.workarea{padding:14px}.editor{padding:22px 16px}.workspace-head{padding:7px 2px 14px}.head-label{display:none}.preview-shell{height:50vh;min-height:340px}.reading-copy{width:calc(100% - 42px);margin-top:95px}.stage-lower{flex-direction:column;align-items:stretch}.stage-lower .primary{width:100%}.controls-panel{padding:15px}.control-split{display:none}.focus-content .reading-copy{width:calc(100% - 36px);margin-top:21vh}.focus-header{padding:12px}.focus-footer{padding:10px 6px;gap:6px}.focus-footer .btn{padding:7px;font-size:11px}.focus-footer .focus-percent{margin-left:0}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
-@media(max-width:700px){.focus-stage{--focus-gutter:18px;height:100dvh}.focus-footer{padding:10px 10px calc(22px + env(safe-area-inset-bottom));gap:8px}.focus-footer .btn{font-size:17px;padding:14px 18px;min-height:52px}#focusAutoBtn{order:-1;flex:1 1 100%;font-size:20px;min-height:60px}.focus-footer .btn{flex:1 1 0;padding:12px 8px;min-height:48px}.focus-footer .focus-percent{margin:0;min-width:34px;text-align:center}.focus-header{padding:10px 12px}.focus-header-brand{display:none}.focus-header{justify-content:flex-end}}
+@media(max-width:700px){.focus-stage{--focus-gutter:18px;height:100dvh}.focus-footer{padding:10px 10px calc(22px + env(safe-area-inset-bottom));gap:8px}.focus-footer .btn{font-size:17px;padding:14px 18px;min-height:52px}#prevSlideBtn,#nextSlideBtn{order:-1;flex:1 1 40%;font-size:17px}#focusAutoBtn{order:-2;flex:1 1 100%;font-size:20px;min-height:60px}.focus-footer .btn{flex:1 1 0;padding:12px 8px;min-height:48px}.focus-footer .focus-percent{margin:0;min-width:34px;text-align:center}.focus-header{padding:10px 12px}.focus-header-brand{display:none}.focus-header{justify-content:flex-end}}
 </style>
 </head>
 <body>
@@ -177,6 +177,8 @@ body.theme-cream .reading-copy.empty{color:#967b68}
   <footer class="focus-footer">
     <button class="btn small" id="backBtn" type="button">← Назад</button>
     <button class="btn small" id="focusAutoBtn" type="button">▶ Автопрокрутка</button>
+    <button class="btn small" id="prevSlideBtn" type="button">◀ Слайд</button>
+    <button class="btn small" id="nextSlideBtn" type="button">Слайд ▶</button>
     <button class="btn small" id="focusMinusBtn" type="button" aria-label="Уменьшить шрифт">A−</button>
     <button class="btn small" id="focusPlusBtn" type="button" aria-label="Увеличить шрифт">A+</button>
     <span class="focus-percent" id="focusProgress">0%</span>
@@ -257,6 +259,9 @@ body.theme-cream .reading-copy.empty{color:#967b68}
  el('mirrorBtn').addEventListener('click',()=>{settings.mirror=!settings.mirror;applySettings();scheduleSave()});
  el('guideBtn').addEventListener('click',()=>{settings.guide=!settings.guide;applySettings();scheduleSave()});
  el('autoBtn').addEventListener('click',()=>setAuto(!auto));
+
+ function slideJump(dir){const node=focusCopy.firstChild;if(!node)return;const text=node.textContent;const re=/^━━━.*$/gm;const pos=[];let m;while((m=re.exec(text)))pos.push(m.index);if(!pos.length)return;const r=focusReader.getBoundingClientRect();const tops=pos.map(i=>{const g=document.createRange();g.setStart(node,i);g.setEnd(node,i+1);return g.getBoundingClientRect().top-r.top+focusReader.scrollTop-24});const cur=focusReader.scrollTop;let t;if(dir>0){t=tops.find(x=>x>cur+40);if(t===undefined)t=focusReader.scrollHeight}else{const prev=tops.filter(x=>x<cur-40);t=prev.length?prev[prev.length-1]:0}focusReader.scrollTop=Math.max(0,t);autoPos=focusReader.scrollTop;syncProgress()}
+ el('nextSlideBtn').addEventListener('click',()=>slideJump(1));el('prevSlideBtn').addEventListener('click',()=>slideJump(-1));
  el('focusAutoBtn').addEventListener('click',()=>setAuto(!auto));
  el('presentBtn').addEventListener('click',enterFocus);
  el('exitBtn').addEventListener('click',exitFocus);
