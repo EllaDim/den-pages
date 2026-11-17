@@ -111,6 +111,7 @@ body.theme-cream .reading-copy.empty{color:#967b68}
 @media(max-width:1000px){.workarea{grid-template-columns:1fr}.editor{min-height:390px}.script-input{min-height:190px}.preview-shell{height:58vh;max-height:none;flex:none}.workspace{min-height:auto}.focus-content .reading-copy{width:calc(100% - 70px)}.controls-panel{gap:10px}.top-meta{display:none}}
 @media(max-width:560px){.topbar{padding:17px 18px}.workarea{padding:14px}.editor{padding:22px 16px}.workspace-head{padding:7px 2px 14px}.head-label{display:none}.preview-shell{height:50vh;min-height:340px}.reading-copy{width:calc(100% - 42px);margin-top:95px}.stage-lower{flex-direction:column;align-items:stretch}.stage-lower .primary{width:100%}.controls-panel{padding:15px}.control-split{display:none}.focus-content .reading-copy{width:calc(100% - 36px);margin-top:21vh}.focus-header{padding:12px}.focus-footer{padding:10px 6px;gap:6px}.focus-footer .btn{padding:7px;font-size:11px}.focus-footer .focus-percent{margin-left:0}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
+@media(max-width:700px){.focus-stage{--focus-gutter:18px;height:100dvh}.focus-footer{padding:10px 10px calc(22px + env(safe-area-inset-bottom));gap:8px}.focus-footer .btn{font-size:17px;padding:14px 18px;min-height:52px}#focusAutoBtn{order:-1;flex:1 1 100%;font-size:20px;min-height:60px}.focus-footer .btn{flex:1 1 0;padding:12px 8px;min-height:48px}.focus-footer .focus-percent{margin:0;min-width:34px;text-align:center}.focus-header{padding:10px 12px}.focus-header-brand{display:none}.focus-header{justify-content:flex-end}}
 </style>
 </head>
 <body>
@@ -154,7 +155,7 @@ body.theme-cream .reading-copy.empty{color:#967b68}
       <button class="btn primary" id="presentBtn" type="button"><svg><use href="#icon-screen"/></svg> Начать выступление</button>
     </div>
     <section class="controls-panel" aria-label="Настройки телесуфлёра">
-      <div class="control-block"><label class="control-label" for="fontRange">Размер текста</label><input id="fontRange" type="range" min="28" max="100" step="2" value="54"><span id="fontValue">54 px</span></div>
+      <div class="control-block"><label class="control-label" for="fontRange">Размер текста</label><input id="fontRange" type="range" min="14" max="100" step="2" value="54"><span id="fontValue">54 px</span></div>
       <div class="control-split"></div>
       <button class="btn small subtle" id="themeBtn" type="button" aria-pressed="false">☼ Светлый экран</button>
       <button class="btn small subtle" id="mirrorBtn" type="button" aria-pressed="false">⇄ Зеркально</button>
@@ -190,16 +191,16 @@ body.theme-cream .reading-copy.empty{color:#967b68}
  const input=el('scriptInput'), preview=el('reader'), focusReader=el('focusReader'), focusStage=el('focusStage');
  const previewCopy=el('readerText'), focusCopy=el('focusText');
  let focusMode=false,auto=false,frame=0,lastFrame=0,saveTimer=0,toastTimer=0;
- let settings={font:54,speed:35,theme:'dark',mirror:false,guide:false};
+ let settings={font:26,speed:35,theme:'dark',mirror:false,guide:false};
  function announce(message){const node=el('toast');node.textContent=message;node.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>node.classList.remove('show'),2800)}
  function words(text){return (text.trim().match(/[^\s]+/g)||[]).length}
  function render(){const text=input.value.trim();for(const node of [previewCopy,focusCopy]){node.textContent=text||'Здесь появится ваш текст.\n\nВставьте сценарий в редакторе.';node.classList.toggle('empty',!text)}const count=words(text);el('stats').textContent=count+' '+wordForm(count,'слово','слова','слов')+' · ≈ '+(count?Math.max(1,Math.ceil(count/130)):0)+' мин чтения';syncProgress();}
  function wordForm(n,a,b,c){let m=n%100;if(m>=11&&m<=14)return c; m=n%10; return m===1?a:m>=2&&m<=4?b:c}
  function save(){try{localStorage.setItem(key,JSON.stringify({text:input.value,settings}));el('saveStatus').textContent='✓ Сохранено на устройстве'}catch(e){el('saveStatus').textContent='Сохраните TXT для надёжности'}}
  function scheduleSave(){el('saveStatus').textContent='Сохраняется…';clearTimeout(saveTimer);saveTimer=setTimeout(save,350)}
- function load(){try{const stored=JSON.parse(localStorage.getItem(key)||'null');if(stored){input.value=typeof stored.text==='string'?stored.text:'';settings=Object.assign(settings,stored.settings||{})}}catch(e){}settings.font=Number.isFinite(+settings.font)?Math.min(100,Math.max(28,+settings.font)):54;settings.speed=Number.isFinite(+settings.speed)?Math.min(100,Math.max(10,+settings.speed)):35;settings.theme=settings.theme==='cream'?'cream':'dark';settings.mirror=!!settings.mirror;settings.guide=!!settings.guide;applySettings();render()}
+ function load(){try{const stored=JSON.parse(localStorage.getItem(key)||'null');if(stored){input.value=typeof stored.text==='string'?stored.text:'';settings=Object.assign(settings,stored.settings||{})}}catch(e){}settings.font=Number.isFinite(+settings.font)?Math.min(100,Math.max(14,+settings.font)):54;settings.speed=Number.isFinite(+settings.speed)?Math.min(100,Math.max(10,+settings.speed)):35;settings.theme=settings.theme==='cream'?'cream':'dark';settings.mirror=!!settings.mirror;settings.guide=!!settings.guide;applySettings();render()}
  function applySettings(){document.documentElement.style.setProperty('--script-size',settings.font+'px');document.body.classList.toggle('theme-cream',settings.theme==='cream');el('previewShell').classList.toggle('mirrored',settings.mirror);focusReader.classList.toggle('mirrored',settings.mirror);el('previewShell').classList.toggle('show-guide',settings.guide);focusReader.classList.toggle('show-guide',settings.guide);el('fontRange').value=settings.font;el('fontValue').textContent=settings.font+' px';el('speedRange').value=settings.speed;el('speedValue').textContent=settings.speed;el('themeBtn').textContent=settings.theme==='cream'?'☾ Тёмный экран':'☼ Светлый экран';el('themeBtn').classList.toggle('toggle-active',settings.theme==='cream');el('mirrorBtn').classList.toggle('toggle-active',settings.mirror);el('guideBtn').classList.toggle('toggle-active',settings.guide);for(const [id,val] of [['themeBtn',settings.theme==='cream'],['mirrorBtn',settings.mirror],['guideBtn',settings.guide]])el(id).setAttribute('aria-pressed',val)}
- function setFont(v){settings.font=Math.min(100,Math.max(28,Math.round(v/2)*2));const pct=currentProgress();applySettings();requestAnimationFrame(()=>{setProgress(pct);scheduleSave()})}
+ function setFont(v){settings.font=Math.min(100,Math.max(14,Math.round(v/2)*2));const pct=currentProgress();applySettings();requestAnimationFrame(()=>{setProgress(pct);scheduleSave()})}
  function activeReader(){return focusMode?focusReader:preview}
  function progressOf(reader){const max=reader.scrollHeight-reader.clientHeight;return max>0?Math.max(0,Math.min(1,reader.scrollTop/max)):0}
  function currentProgress(){return progressOf(activeReader())}
@@ -209,7 +210,7 @@ body.theme-cream .reading-copy.empty{color:#967b68}
  let autoPos=0;
  function animationFrame(t){if(!auto)return;if(!lastFrame)lastFrame=t;const dt=Math.min((t-lastFrame)/1000,.08);lastFrame=t;const reader=activeReader();const max=reader.scrollHeight-reader.clientHeight;if(Math.abs(reader.scrollTop-autoPos)>2)autoPos=reader.scrollTop;autoPos=Math.min(max,autoPos+settings.speed*dt);reader.scrollTop=autoPos;syncProgress();if(max-autoPos<=1){setAuto(false);return}frame=requestAnimationFrame(animationFrame)}
  function setAuto(flag){auto=!!flag;cancelAnimationFrame(frame);lastFrame=0;if(auto)autoPos=activeReader().scrollTop;updateAutoUI();if(auto)frame=requestAnimationFrame(animationFrame)}
- function enterFocus(){const pct=progressOf(preview);focusMode=true;focusStage.classList.add('active');focusStage.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';requestAnimationFrame(()=>{setProgress(pct);focusReader.focus({preventScroll:true})});if(focusStage.requestFullscreen){focusStage.requestFullscreen().catch(()=>{})}}
+ function enterFocus(){const pct=progressOf(preview);focusMode=true;focusStage.classList.add('active');focusStage.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';requestAnimationFrame(()=>{setProgress(pct);focusReader.focus({preventScroll:true})});}
  function exitFocus(){if(!focusMode)return;setAuto(false);const pct=progressOf(focusReader);focusMode=false;focusStage.classList.remove('active');focusStage.setAttribute('aria-hidden','true');document.body.style.overflow='';if(document.fullscreenElement){document.exitFullscreen().catch(()=>{})}requestAnimationFrame(()=>{setProgress(pct);el('presentBtn').focus({preventScroll:true})})}
  function readTextFile(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(new Error('Не удалось прочитать файл'));reader.readAsText(file,'UTF-8')})}
  // Minimal OOXML DOCX reader: ZIP central directory + browser-native DEFLATE. No online libraries.
