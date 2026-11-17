@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#0d0e10"><link rel="icon" href="icon-192.png"><title>Телесуфлёр · Dimova Studio</title>
+<style>
+:root{--bg:#0d0e10;--panel:#151518;--panel-alt:#1b1b1e;--line:#34302e;--muted:#99918c;--ivory:#f3ede4;--bronze:#c59a78;--bronze-hi:#ebc6a0;--ink:#111111;--script-size:54px;--reader-bg:#070809;--reader-ink:#f6f1e9;--reader-muted:#9a9087;--radius:18px;--shadow:0 28px 90px rgba(0,0,0,.25)}
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--ivory);background:radial-gradient(circle at 78% -12%,#2a201b 0%,transparent 34%),var(--bg);font-size:14px}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,label:focus-within{outline:2px solid var(--bronze-hi);outline-offset:3px}
+button:disabled{opacity:.45;cursor:not-allowed}
+button svg,.upload svg{width:17px;height:17px;flex:none}
+.app{max-width:1800px;min-height:100vh;margin:auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:24px 37px 22px;border-bottom:1px solid #ffffff12;gap:14px}
+.brand{display:flex;align-items:center;gap:15px}
+.brand-mark{width:40px;height:40px;border:1px solid #916d55;border-radius:12px;display:grid;place-items:center;position:relative;background:linear-gradient(135deg,#49352a,#201d1b)}
+.brand-mark:before,.brand-mark:after{content:"";position:absolute;width:3px;height:17px;border-radius:3px;background:var(--bronze);transform:rotate(22deg)}
+.brand-mark:before{left:15px}.brand-mark:after{left:23px;height:11px}
+.brand-name{font-size:20px;font-weight:660;letter-spacing:.015em;line-height:1.15}
+.brand-byline{color:var(--bronze);text-transform:uppercase;letter-spacing:.23em;font-size:9px;margin-top:5px}
+.top-status{display:flex;align-items:center;gap:9px;color:#bcb1a7;font-size:12px;white-space:nowrap}
+.status-light{height:7px;width:7px;background:#89a78d;border-radius:50%;box-shadow:0 0 0 4px #89a78d15}
+.top-meta{color:#7f7671;font-size:11px;margin-left:20px;letter-spacing:.08em}
+.workarea{display:grid;grid-template-columns:minmax(310px,390px) minmax(0,1fr);gap:22px;padding:24px 30px 34px;min-height:calc(100vh - 88px)}
+.editor,.workspace{min-width:0}
+.editor{background:linear-gradient(175deg,#1b1919,#151518 35%);border:1px solid #3b322d;border-radius:var(--radius);padding:26px 24px 20px;display:flex;flex-direction:column;min-height:660px}
+.kicker{color:var(--bronze);text-transform:uppercase;font-size:10px;letter-spacing:.21em;font-weight:700}
+.editor h2,.section-title{font-weight:600;font-size:22px;letter-spacing:-.02em;line-height:1.2;margin:11px 0 11px}
+.section-intro{margin:0;color:#aca29b;line-height:1.6;font-size:12px}
+.editor-actions{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:23px 0 15px}
+.btn{border:1px solid #554238;border-radius:10px;min-height:38px;padding:8px 13px;color:var(--ivory);background:#26211f;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background .18s,border-color .18s,transform .18s}
+.btn:hover{background:#3c2d27;border-color:#9a745e}
+.btn:active{transform:translateY(1px)}
+.btn.subtle{background:#201e1e;border-color:#403735;color:#c9bdb4}
+.btn.subtle:hover{background:#332927}
+.btn.primary{border:1px solid #dfb58f;color:#201710;background:linear-gradient(145deg,#eed0ab,#c99b76);font-weight:720;box-shadow:0 7px 22px #bc88651b}
+.btn.primary:hover{background:linear-gradient(145deg,#ffe0bb,#d4a684)}
+.btn.small{padding:7px 10px;min-height:33px;font-size:12px}
+#fileInput{display:none}
+.upload{cursor:pointer}
+.script-input{display:block;resize:none;flex:1;width:100%;min-height:300px;border:1px solid #514238;background:#101012;border-radius:12px;padding:22px 18px;color:#f3e8db;line-height:1.68;font-size:14px;outline:none}
+.script-input:focus{border-color:#bd9171;box-shadow:inset 0 0 0 1px #bd917145}
+.script-input::placeholder{color:#766f6c}
+.editor-footer{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:15px 2px;color:#a69c96;font-size:11px}
+#saveStatus{color:#a4b5a1}
+.editor-tip{background:#27211f;border:1px solid #46362e;border-radius:11px;padding:14px 14px 13px;color:#c5b8ae;font-size:11px;line-height:1.65}
+.editor-tip b{color:#e6c5aa;font-weight:650}
+.workspace{display:flex;flex-direction:column;min-height:650px}
+.workspace-head{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;padding:8px 4px 18px}
+.workspace-head .section-title{margin:6px 0 0}
+.workspace-head p{margin:8px 0 0;color:#9f958f;font-size:12px}
+.head-label{display:flex;align-items:center;gap:9px;color:#b5a398;font-size:11px;letter-spacing:.02em;white-space:nowrap}
+.head-label span{background:#27211f;border:1px solid #504038;padding:7px 10px;border-radius:7px}
+.preview-shell{position:relative;min-height:430px;flex:1;max-height:calc(100vh - 335px);border-radius:18px;background:var(--reader-bg);border:1px solid #494039;box-shadow:var(--shadow);overflow:hidden}
+.preview-shell:after{content:"";pointer-events:none;position:absolute;inset:0;border:1px solid #ffffff08;border-radius:18px}
+.preview-shell .corner-label{position:absolute;left:28px;top:22px;color:#94745f;font-size:10px;letter-spacing:.22em;z-index:2}
+.reader-scroll{height:100%;width:100%;overflow-y:auto;overscroll-behavior:contain;scrollbar-color:#94755f #1b1a1b;scrollbar-width:thin;scroll-behavior:auto;background:var(--reader-bg);color:var(--reader-ink)}
+.reader-scroll::-webkit-scrollbar{width:9px}
+.reader-scroll::-webkit-scrollbar-track{background:#141416}
+.reader-scroll::-webkit-scrollbar-thumb{border:2px solid #141416;background:#a38269;border-radius:10px}
+.reading-copy{font-family:"Segoe UI",Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;font-size:var(--script-size);font-weight:580;line-height:1.49;letter-spacing:.005em;max-width:1050px;width:calc(100% - 104px);margin:105px auto 38vh;transition:color .2s;transform-origin:center}
+.preview-shell .reading-copy{font-size:clamp(30px,var(--script-size),80px)}
+.reading-copy.empty{color:#8b8078;font-size:32px!important;font-weight:450}
+.mirrored .reading-copy{transform:scaleX(-1)}
+.reading-guide{display:none;position:sticky;top:36%;height:0;margin:0 8%;border-top:1px solid rgba(213,164,116,.4);pointer-events:none;z-index:2;box-shadow:0 0 18px #d8ab8525}
+.show-guide .reading-guide{display:block}
+.preview-shell .reading-guide{top:33%}
+.stage-lower{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px}
+.progress-side{flex:1;min-width:0}
+.progress-text{display:flex;justify-content:space-between;color:#b4a59b;letter-spacing:.02em;font-size:11px;margin-bottom:9px}
+.progress-track{background:#322b28;height:4px;border-radius:99px;overflow:hidden}
+.progress-track b{display:block;height:100%;width:0%;background:linear-gradient(90deg,#96735b,#e4b48d);border-radius:99px;transition:width .1s}
+.stage-lower .primary{min-width:192px;min-height:44px}
+.controls-panel{margin-top:18px;display:flex;flex-wrap:wrap;gap:12px;padding:17px 18px;background:#171719;border:1px solid #38312f;border-radius:14px;align-items:center}
+.control-block{display:flex;align-items:center;gap:8px}
+.control-label{color:#b3a69f;white-space:nowrap;font-size:11px}
+.control-block input[type="range"]{width:110px;accent-color:#c59a78;cursor:pointer}
+#fontValue,#speedValue{color:#e4be9e;font-size:11px;min-width:36px;font-variant-numeric:tabular-nums}
+.control-split{height:25px;width:1px;background:#4d3c34;margin:0 3px}
+.toggle-active{background:#4a3429!important;color:#f5d7bc!important;border-color:#a98368!important}
+.switch-btn{font-size:11px}
+.controls-hint{margin-top:12px;color:#8f8179;font-size:11px;padding-left:4px;line-height:1.45}
+.focus-stage{--focus-gutter:72px;display:none;position:fixed;inset:0;z-index:1000;background:var(--reader-bg);color:var(--reader-ink)}
+.focus-stage.active{display:flex;flex-direction:column}
+.focus-header,.focus-footer{position:absolute;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 23px;background:linear-gradient(#0e0d0df2,#0e0d0d99);color:#e9c5a6}
+.focus-header{top:0;border-bottom:1px solid #ffffff12}
+.focus-header-brand{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.focus-header .small{font-size:11px}
+.focus-footer{bottom:0;background:linear-gradient(#101012b0,#101012f8);border-top:1px solid #ffffff13;justify-content:center;flex-wrap:wrap}
+.focus-footer .focus-percent{margin-left:8px;color:#bb9d85;font-variant-numeric:tabular-nums;font-size:12px;min-width:36px}
+.focus-content{flex:1;min-height:0;position:relative}
+.focus-content .reading-copy{width:calc(100% - var(--focus-gutter)*2);max-width:1300px;margin:23vh auto 80vh;font-size:var(--script-size);line-height:1.55}
+.focus-content .reading-copy.empty{font-size:40px!important}
+.focus-content .reading-guide{top:38%}
+body.theme-cream{--reader-bg:#f4ecdf;--reader-ink:#271c17;--reader-muted:#9d816f}
+body.theme-cream .reader-scroll::-webkit-scrollbar-track{background:#e6d9cd}
+body.theme-cream .reader-scroll::-webkit-scrollbar-thumb{border-color:#e6d9cd;background:#a47d62}
+body.theme-cream .focus-header,body.theme-cream .focus-footer{background:#f3ebdfed;border-color:#96796038;color:#402a21}
+body.theme-cream .focus-header-brand{color:#6c4634}
+body.theme-cream .focus-footer .focus-percent{color:#7d5742}
+body.theme-cream .focus-footer .btn,body.theme-cream .focus-header .btn{background:#e4d2c1;border-color:#ba9475;color:#402d22}
+body.theme-cream .preview-shell .corner-label{color:#7b553e}
+body.theme-cream .reading-copy.empty{color:#967b68}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);padding:12px 20px;border:1px solid #9a765d;border-radius:12px;background:#291f1c;color:#f3e4d6;box-shadow:0 12px 45px #0008;z-index:1500;opacity:0;pointer-events:none;transition:opacity .23s,transform .23s;max-width:calc(100vw - 30px);text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:1000px){.workarea{grid-template-columns:1fr}.editor{min-height:390px}.script-input{min-height:190px}.preview-shell{height:58vh;max-height:none;flex:none}.workspace{min-height:auto}.focus-content .reading-copy{width:calc(100% - 70px)}.controls-panel{gap:10px}.top-meta{display:none}}
+@media(max-width:560px){.topbar{padding:17px 18px}.workarea{padding:14px}.editor{padding:22px 16px}.workspace-head{padding:7px 2px 14px}.head-label{display:none}.preview-shell{height:50vh;min-height:340px}.reading-copy{width:calc(100% - 42px);margin-top:95px}.stage-lower{flex-direction:column;align-items:stretch}.stage-lower .primary{width:100%}.controls-panel{padding:15px}.control-split{display:none}.focus-content .reading-copy{width:calc(100% - 36px);margin-top:21vh}.focus-header{padding:12px}.focus-footer{padding:10px 6px;gap:6px}.focus-footer .btn{padding:7px;font-size:11px}.focus-footer .focus-percent{margin-left:0}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<!-- All assets and application logic are local. No network requests. -->
+<svg aria-hidden="true" style="display:none" xmlns="http://www.w3.org/2000/svg">
+<symbol id="icon-upload" viewBox="0 0 24 24"><path d="M12 16V3m0 0L7 8m5-5l5 5M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="icon-screen" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="icon-download" viewBox="0 0 24 24"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 17v3a1 1 0 001 1h14a1 1 0 001-1v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+<div class="app">
+<header class="topbar">
+  <div class="brand"><div class="brand-mark" aria-hidden="true"></div><div><div class="brand-name">Телесуфлёр</div><div class="brand-byline">DIMOVA STUDIO · PERSONAL EDITION</div></div></div>
+  <div class="top-status"><span class="status-light"></span><span>Работает без интернета</span><span class="top-meta">LOCAL · 1.0</span></div>
+</header>
+<div class="workarea">
+  <aside class="editor">
+    <div class="kicker">01 / Подготовка</div>
+    <h2>Ваш сценарий</h2>
+    <p class="section-intro">Вставьте текст или загрузите документ. Он останется на вашем компьютере.</p>
+    <div class="editor-actions">
+      <label class="btn upload" for="fileInput" title="Поддерживаются TXT, MD и DOCX"><svg><use href="#icon-upload"/></svg> Загрузить файл</label>
+      <input type="file" id="fileInput" accept=".txt,.md,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+      <button class="btn subtle" id="exportBtn" type="button" title="Скачать текст выступления"><svg><use href="#icon-download"/></svg> Сохранить TXT</button>
+      <button class="btn subtle" id="clearBtn" type="button">Очистить</button>
+    </div>
+    <textarea class="script-input" id="scriptInput" spellcheck="false" aria-label="Текст выступления" placeholder="Вставьте сюда текст вашей презентации...&#10;&#10;Совет: отделяйте смысловые блоки пустой строкой, так вам будет легче ориентироваться во время выступления."></textarea>
+    <div class="editor-footer"><span id="stats">0 слов · 0 мин чтения</span><span id="saveStatus">Локальное сохранение</span></div>
+    <div class="editor-tip"><b>Для выступления:</b> нажмите «Начать выступление» и листайте текст колёсиком мыши, тачпадом или клавишами ↑ ↓. <b>PgDown</b> перелистывает крупным шагом. Интернет не нужен.</div>
+  </aside>
+  <main class="workspace">
+    <div class="workspace-head"><div><div class="kicker">02 / Репетиция</div><h2 class="section-title">Экран выступления</h2><p>Выберите комфортный размер и откройте на весь экран.</p></div><div class="head-label"><span>Приватно</span><span>Без подключения</span></div></div>
+    <section class="preview-shell" id="previewShell" aria-label="Предпросмотр телесуфлёра">
+      <div class="corner-label">LIVE PREVIEW</div>
+      <div class="reader-scroll" id="reader" tabindex="0" aria-label="Превью текста с прокруткой">
+        <div class="reading-guide" aria-hidden="true"></div>
+        <div class="reading-copy empty" id="readerText">Здесь появится ваш текст.\n\nДобавьте сценарий слева, чтобы начать.</div>
+      </div>
+    </section>
+    <div class="stage-lower">
+      <div class="progress-side"><div class="progress-text"><span>Прогресс выступления</span><span id="progressLabel">0%</span></div><div class="progress-track"><b id="progressFill"></b></div></div>
+      <button class="btn primary" id="presentBtn" type="button"><svg><use href="#icon-screen"/></svg> Начать выступление</button>
+    </div>
+    <section class="controls-panel" aria-label="Настройки телесуфлёра">
+      <div class="control-block"><label class="control-label" for="fontRange">Размер текста</label><input id="fontRange" type="range" min="28" max="100" step="2" value="54"><span id="fontValue">54 px</span></div>
+      <div class="control-split"></div>
+      <button class="btn small subtle" id="themeBtn" type="button" aria-pressed="false">☼ Светлый экран</button>
+      <button class="btn small subtle" id="mirrorBtn" type="button" aria-pressed="false">⇄ Зеркально</button>
+      <button class="btn small subtle" id="guideBtn" type="button" aria-pressed="false">— Линия взгляда</button>
+      <div class="control-split"></div>
+      <div class="control-block"><label class="control-label" for="speedRange">Автопрокрутка</label><input id="speedRange" type="range" min="10" max="100" step="5" value="35"><span id="speedValue">35</span></div>
+      <button class="btn small subtle" id="autoBtn" type="button" aria-pressed="false">▶ Пуск</button>
+    </section>
+    <div class="controls-hint">Горячие клавиши вне поля ввода: <b>Пробел</b> · пуск/пауза, <b>Ctrl + Enter</b> · экран выступления, <b>Esc</b> · выход, <b>+ / −</b> · размер шрифта.</div>
+  </main>
+</div>
+</div>
+<div class="focus-stage" id="focusStage" aria-hidden="true" role="dialog" aria-label="Режим выступления">
+  <header class="focus-header"><span class="focus-header-brand">DIMOVA STUDIO <span style="opacity:.5">/</span> ТЕЛЕСУФЛЁР</span><button class="btn small subtle" id="exitBtn" type="button">✕ Закрыть выступление</button></header>
+  <div class="focus-content reader-scroll" id="focusReader" tabindex="0" aria-label="Текст выступления">
+    <div class="reading-guide" aria-hidden="true"></div>
+    <div class="reading-copy empty" id="focusText">Здесь появится ваш текст.</div>
+  </div>
+  <footer class="focus-footer">
+    <button class="btn small" id="backBtn" type="button">← Назад</button>
+    <button class="btn small" id="focusAutoBtn" type="button">▶ Автопрокрутка</button>
+    <button class="btn small" id="focusMinusBtn" type="button" aria-label="Уменьшить шрифт">A−</button>
+    <button class="btn small" id="focusPlusBtn" type="button" aria-label="Увеличить шрифт">A+</button>
+    <span class="focus-percent" id="focusProgress">0%</span>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+ 'use strict';
+ const key='dimova_teleprompter_v1';
+ const el=id=>document.getElementById(id);
+ const input=el('scriptInput'), preview=el('reader'), focusReader=el('focusReader'), focusStage=el('focusStage');
+ const previewCopy=el('readerText'), focusCopy=el('focusText');
+ let focusMode=false,auto=false,frame=0,lastFrame=0,saveTimer=0,toastTimer=0;
+ let settings={font:54,speed:35,theme:'dark',mirror:false,guide:false};
+ function announce(message){const node=el('toast');node.textContent=message;node.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>node.classList.remove('show'),2800)}
+ function words(text){return (text.trim().match(/[^\s]+/g)||[]).length}
+ function render(){const text=input.value.trim();for(const node of [previewCopy,focusCopy]){node.textContent=text||'Здесь появится ваш текст.\n\nВставьте сценарий в редакторе.';node.classList.toggle('empty',!text)}const count=words(text);el('stats').textContent=count+' '+wordForm(count,'слово','слова','слов')+' · ≈ '+(count?Math.max(1,Math.ceil(count/130)):0)+' мин чтения';syncProgress();}
+ function wordForm(n,a,b,c){let m=n%100;if(m>=11&&m<=14)return c; m=n%10; return m===1?a:m>=2&&m<=4?b:c}
+ function save(){try{localStorage.setItem(key,JSON.stringify({text:input.value,settings}));el('saveStatus').textContent='✓ Сохранено на устройстве'}catch(e){el('saveStatus').textContent='Сохраните TXT для надёжности'}}
+ function scheduleSave(){el('saveStatus').textContent='Сохраняется…';clearTimeout(saveTimer);saveTimer=setTimeout(save,350)}
+ function load(){try{const stored=JSON.parse(localStorage.getItem(key)||'null');if(stored){input.value=typeof stored.text==='string'?stored.text:'';settings=Object.assign(settings,stored.settings||{})}}catch(e){}settings.font=Number.isFinite(+settings.font)?Math.min(100,Math.max(28,+settings.font)):54;settings.speed=Number.isFinite(+settings.speed)?Math.min(100,Math.max(10,+settings.speed)):35;settings.theme=settings.theme==='cream'?'cream':'dark';settings.mirror=!!settings.mirror;settings.guide=!!settings.guide;applySettings();render()}
+ function applySettings(){document.documentElement.style.setProperty('--script-size',settings.font+'px');document.body.classList.toggle('theme-cream',settings.theme==='cream');el('previewShell').classList.toggle('mirrored',settings.mirror);focusReader.classList.toggle('mirrored',settings.mirror);el('previewShell').classList.toggle('show-guide',settings.guide);focusReader.classList.toggle('show-guide',settings.guide);el('fontRange').value=settings.font;el('fontValue').textContent=settings.font+' px';el('speedRange').value=settings.speed;el('speedValue').textContent=settings.speed;el('themeBtn').textContent=settings.theme==='cream'?'☾ Тёмный экран':'☼ Светлый экран';el('themeBtn').classList.toggle('toggle-active',settings.theme==='cream');el('mirrorBtn').classList.toggle('toggle-active',settings.mirror);el('guideBtn').classList.toggle('toggle-active',settings.guide);for(const [id,val] of [['themeBtn',settings.theme==='cream'],['mirrorBtn',settings.mirror],['guideBtn',settings.guide]])el(id).setAttribute('aria-pressed',val)}
+ function setFont(v){settings.font=Math.min(100,Math.max(28,Math.round(v/2)*2));const pct=currentProgress();applySettings();requestAnimationFrame(()=>{setProgress(pct);scheduleSave()})}
+ function activeReader(){return focusMode?focusReader:preview}
+ function progressOf(reader){const max=reader.scrollHeight-reader.clientHeight;return max>0?Math.max(0,Math.min(1,reader.scrollTop/max)):0}
+ function currentProgress(){return progressOf(activeReader())}
+ function setProgress(p){const r=activeReader();r.scrollTop=(r.scrollHeight-r.clientHeight)*p;syncProgress()}
+ function syncProgress(){const p=Math.round(currentProgress()*100);el('progressLabel').textContent=p+'%';el('focusProgress').textContent=p+'%';el('progressFill').style.width=p+'%'}
+ function updateAutoUI(){for(const id of ['autoBtn','focusAutoBtn']){const b=el(id);b.classList.toggle('toggle-active',auto);b.setAttribute('aria-pressed',auto)}el('autoBtn').textContent=auto?'❚❚ Пауза':'▶ Пуск';el('focusAutoBtn').textContent=auto?'❚❚ Пауза':'▶ Автопрокрутка'}
+ let autoPos=0;
+ function animationFrame(t){if(!auto)return;if(!lastFrame)lastFrame=t;const dt=Math.min((t-lastFrame)/1000,.08);lastFrame=t;const reader=activeReader();const max=reader.scrollHeight-reader.clientHeight;if(Math.abs(reader.scrollTop-autoPos)>2)autoPos=reader.scrollTop;autoPos=Math.min(max,autoPos+settings.speed*dt);reader.scrollTop=autoPos;syncProgress();if(max-autoPos<=1){setAuto(false);return}frame=requestAnimationFrame(animationFrame)}
+ function setAuto(flag){auto=!!flag;cancelAnimationFrame(frame);lastFrame=0;if(auto)autoPos=activeReader().scrollTop;updateAutoUI();if(auto)frame=requestAnimationFrame(animationFrame)}
+ function enterFocus(){const pct=progressOf(preview);focusMode=true;focusStage.classList.add('active');focusStage.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';requestAnimationFrame(()=>{setProgress(pct);focusReader.focus({preventScroll:true})});if(focusStage.requestFullscreen){focusStage.requestFullscreen().catch(()=>{})}}
+ function exitFocus(){if(!focusMode)return;setAuto(false);const pct=progressOf(focusReader);focusMode=false;focusStage.classList.remove('active');focusStage.setAttribute('aria-hidden','true');document.body.style.overflow='';if(document.fullscreenElement){document.exitFullscreen().catch(()=>{})}requestAnimationFrame(()=>{setProgress(pct);el('presentBtn').focus({preventScroll:true})})}
+ function readTextFile(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(new Error('Не удалось прочитать файл'));reader.readAsText(file,'UTF-8')})}
+ // Minimal OOXML DOCX reader: ZIP central directory + browser-native DEFLATE. No online libraries.
+ async function readDocx(file){
+  const bytes=new Uint8Array(await file.arrayBuffer());const view=new DataView(bytes.buffer);let eocd=-1;
+  for(let i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--){if(view.getUint32(i,true)===0x06054b50){eocd=i;break}}
+  if(eocd<0)throw Error('Не найден архив DOCX');
+  const entries=view.getUint16(eocd+10,true),start=view.getUint32(eocd+16,true);let cursor=start,xml='';
+  const dec=new TextDecoder('utf-8');
+  for(let n=0;n<entries;n++){
+    if(view.getUint32(cursor,true)!==0x02014b50)throw Error('Повреждён DOCX');
+    const compression=view.getUint16(cursor+10,true),size=view.getUint32(cursor+20,true);
+    const nameSize=view.getUint16(cursor+28,true),extraSize=view.getUint16(cursor+30,true),commentSize=view.getUint16(cursor+32,true);
+    const name=dec.decode(bytes.subarray(cursor+46,cursor+46+nameSize));
+    if(name==='word/document.xml'){
+      const local=view.getUint32(cursor+42,true);
+      if(view.getUint32(local,true)!==0x04034b50)throw Error('Повреждён DOCX');
+      const dataStart=local+30+view.getUint16(local+26,true)+view.getUint16(local+28,true);
+      const data=bytes.slice(dataStart,dataStart+size);
+      if(compression===0)xml=dec.decode(data);
+      else if(compression===8&&typeof DecompressionStream!=='undefined'){
+        const stream=new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+        xml=await new Response(stream).text();
+      }else throw Error('Для DOCX нужен современный Chrome или Edge');
+      break;
+    }
+    cursor+=46+nameSize+extraSize+commentSize;
+  }
+  if(!xml)throw Error('Не найден текст документа DOCX');
+  const doc=new DOMParser().parseFromString(xml,'application/xml');
+  if(doc.querySelector('parsererror'))throw Error('Не удалось прочитать содержимое DOCX');
+  const ns='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+  const paragraphs=Array.from(doc.getElementsByTagNameNS(ns,'p'));
+  const text=paragraphs.map(p=>Array.from(p.getElementsByTagNameNS(ns,'t')).map(t=>t.textContent).join('')).join('\n\n');
+  return text.trim();
+ }
+ input.addEventListener('input',()=>{render();scheduleSave()});
+ el('fileInput').addEventListener('change',async ev=>{const file=ev.target.files&&ev.target.files[0];if(!file)return;try{if(file.size>15*1024*1024)throw Error('Файл слишком большой. Максимум 15 МБ');const type=file.name.split('.').pop().toLowerCase();if(!['txt','md','docx'].includes(type))throw Error('Поддерживаются TXT, MD и DOCX');const text=type==='docx'?await readDocx(file):await readTextFile(file);if(!text.trim())throw Error('В файле нет текста');if(input.value.trim()&&!confirm('Заменить текущий сценарий содержимым файла?'))return;input.value=text;render();scheduleSave();announce('Файл загружен. Всё готово к репетиции.')}catch(e){announce('Ошибка: '+e.message)}finally{ev.target.value=''}});
+ el('clearBtn').addEventListener('click',()=>{if(!input.value.trim())return;if(confirm('Очистить сценарий? Сначала сохраните его в TXT, если он нужен.')){input.value='';render();scheduleSave();input.focus()}});
+ el('exportBtn').addEventListener('click',()=>{if(!input.value.trim()){announce('Сначала добавьте текст');return}const url=URL.createObjectURL(new Blob(['\ufeff'+input.value],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='Моё выступление.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);announce('Текст сохранён в TXT')});
+ el('fontRange').addEventListener('input',e=>setFont(+e.target.value));
+ el('speedRange').addEventListener('input',e=>{settings.speed=+e.target.value;el('speedValue').textContent=settings.speed;scheduleSave()});
+ el('themeBtn').addEventListener('click',()=>{settings.theme=settings.theme==='cream'?'dark':'cream';applySettings();scheduleSave()});
+ el('mirrorBtn').addEventListener('click',()=>{settings.mirror=!settings.mirror;applySettings();scheduleSave()});
+ el('guideBtn').addEventListener('click',()=>{settings.guide=!settings.guide;applySettings();scheduleSave()});
+ el('autoBtn').addEventListener('click',()=>setAuto(!auto));
+ el('focusAutoBtn').addEventListener('click',()=>setAuto(!auto));
+ el('presentBtn').addEventListener('click',enterFocus);
+ el('exitBtn').addEventListener('click',exitFocus);
+ el('backBtn').addEventListener('click',exitFocus);
+ el('focusMinusBtn').addEventListener('click',()=>setFont(settings.font-4));
+ el('focusPlusBtn').addEventListener('click',()=>setFont(settings.font+4));
+ for(const reader of [preview,focusReader]){
+   reader.addEventListener('scroll',syncProgress,{passive:true});
+   reader.addEventListener('wheel',()=>{if(auto)setAuto(false)},{passive:true});
+   reader.addEventListener('touchstart',()=>{if(auto)setAuto(false)},{passive:true});
+ }
+ document.addEventListener('keydown',ev=>{
+   if((ev.ctrlKey||ev.metaKey)&&ev.key.toLowerCase()==='s'){ev.preventDefault();save();announce('Сценарий сохранён локально');return}
+   if(ev.key==='Escape'&&focusMode){exitFocus();return}
+   if((ev.ctrlKey||ev.metaKey)&&ev.key==='Enter'){ev.preventDefault();if(!focusMode)enterFocus();return}
+   if(ev.target instanceof HTMLElement&&(['TEXTAREA','INPUT'].includes(ev.target.tagName)||ev.target.isContentEditable))return;
+   const reader=activeReader();
+   switch(ev.key){
+     case ' ':ev.preventDefault();setAuto(!auto);break;
+     case 'ArrowDown':ev.preventDefault();reader.scrollBy(0,settings.font*1.4);break;
+     case 'ArrowUp':ev.preventDefault();reader.scrollBy(0,-settings.font*1.4);break;
+     case 'PageDown':ev.preventDefault();reader.scrollBy(0,reader.clientHeight*.78);break;
+     case 'PageUp':ev.preventDefault();reader.scrollBy(0,-reader.clientHeight*.78);break;
+     case 'Home':ev.preventDefault();reader.scrollTop=0;break;
+     case 'End':ev.preventDefault();reader.scrollTop=reader.scrollHeight;break;
+     case '+':case '=':ev.preventDefault();setFont(settings.font+4);break;
+     case '-':case '_':ev.preventDefault();setFont(settings.font-4);break;
+   }
+ });
+ document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&focusMode){/* focus mode stays open, so Escape never loses the text */}});
+ load();
+})();
+</script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js')</script></body>
+</html>
